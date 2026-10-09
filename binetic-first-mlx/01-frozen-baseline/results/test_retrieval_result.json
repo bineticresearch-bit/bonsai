@@ -1,0 +1,203 @@
+{
+  "code_chunk": 339,
+  "code_span": [
+    2713,
+    2714,
+    2715,
+    2716
+  ],
+  "ret_rank": 18,
+  "sig_rank": 26,
+  "n_chunks": 677,
+  "top10_retrieval": [
+    {
+      "chunk": 0,
+      "cos": 0.8305,
+      "content": "user\nTurn 0: The"
+    },
+    {
+      "chunk": 136,
+      "cos": 0.8215,
+      "content": ". Turn 2: The secret code"
+    },
+    {
+      "chunk": 271,
+      "cos": 0.8204,
+      "content": "4: The secret code is 1"
+    },
+    {
+      "chunk": 69,
+      "cos": 0.8189,
+      "content": ": The secret code is 84"
+    },
+    {
+      "chunk": 338,
+      "cos": 0.816,
+      "content": " Turn 5: The secret code is"
+    },
+    {
+      "chunk": 474,
+      "cos": 0.8114,
+      "content": " code is 7748."
+    },
+    {
+      "chunk": 1,
+      "cos": 0.7965,
+      "content": " secret code is 8270"
+    },
+    {
+      "chunk": 608,
+      "cos": 0.7964,
+      "content": " Turn 9: The secret code is"
+    },
+    {
+      "chunk": 541,
+      "cos": 0.7939,
+      "content": ". Turn 8: The secret code"
+    },
+    {
+      "chunk": 542,
+      "cos": 0.7897,
+      "content": " is 8651. System"
+    }
+  ],
+  "inplace": {
+    "n": 5409,
+    "recall": true,
+    "actual": 5211,
+    "text": "5211\nuser\n\n\n<think>\nThe user is asking me to repeat the secret code from turn 5."
+  },
+  "retrieval_k8": {
+    "n": 64,
+    "recall": false,
+    "actual": 8270,
+    "code_in_selection": 0,
+    "text": "8270\nuser\n\n<think>\nThe user is asking me to repeat the secret code from turn 5. "
+  },
+  "retrieval_k8_win16": {
+    "n": 220,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\nuser\n\n\n<think>\nThe user is asking me to repeat the secret code from turn 5."
+  },
+  "tsig_k8": {
+    "n": 64,
+    "recall": false,
+    "actual": 8270,
+    "code_in_selection": 0,
+    "text": "8270\nuser\n\nassistant\n<think>\n\n</think>\n\n8270\nuser\n\nassistant\n"
+  },
+  "tsig_k8_win16": {
+    "n": 241,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\nuser\nWhat\n<think>\nThe user is asking \"What\" - this seems like a follow-up o"
+  },
+  "random_k8": {
+    "n": 64,
+    "recall": false,
+    "actual": null,
+    "code_in_selection": 0,
+    "text": "Just the number.\nassistant\n<think>\n\n</think>\n\nJust the number.\nassistant\n<think>"
+  },
+  "random_k8_win16": {
+    "n": 232,
+    "recall": false,
+    "actual": null,
+    "code_in_selection": 0,
+    "text": "7\n\n\n\n\n\n\n\n\n\n"
+  },
+  "retrieval_k16": {
+    "n": 128,
+    "recall": false,
+    "actual": 1541,
+    "code_in_selection": 0,
+    "text": "1541\n\n\n\n\n\n\n\n\n"
+  },
+  "retrieval_k16_win16": {
+    "n": 356,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\n\n\n\n\n\n\n\n\n"
+  },
+  "tsig_k16": {
+    "n": 128,
+    "recall": false,
+    "actual": 8421,
+    "code_in_selection": 0,
+    "text": "8421\n\n\n\n\n\n\n\n\n"
+  },
+  "tsig_k16_win16": {
+    "n": 353,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\n\n\n\n\n\n\n\n\n"
+  },
+  "random_k16": {
+    "n": 128,
+    "recall": false,
+    "actual": null,
+    "code_in_selection": 0,
+    "text": "The secret code from turn 5 is 1.\n<think>\n\n</think>\n\nThe secret code from turn 5"
+  },
+  "random_k16_win16": {
+    "n": 501,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\n\n\n\n\n\n\n\n\n\n\n"
+  },
+  "retrieval_k32": {
+    "n": 256,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\n\n\n\n\n\n\n\n\n"
+  },
+  "retrieval_k32_win16": {
+    "n": 497,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\nuser\nWhat\n<think>\nThe user is asking \"What\" which is a very brief and ambig"
+  },
+  "tsig_k32": {
+    "n": 256,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\nuser\n\n<think>\n\n</think>\n\n5211\nuser\n\nassistant\n<think>\n\n"
+  },
+  "tsig_k32_win16": {
+    "n": 505,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\nuser\nWhat\n<think>\nThe user is asking \"What\" - this is a very brief, ambiguo"
+  },
+  "random_k32": {
+    "n": 256,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\nassistant\n<think>\n\n</think>\n\n1207\nassistant\n<think>\n\n</think>\n\n1207\n"
+  },
+  "random_k32_win16": {
+    "n": 960,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\nuser\nWhat was the secret code from turn 5?\n<think>\n\n</think>\n\n1207"
+  },
+  "verdict": "RETRIEVAL WINS \u2014 recalls at k=8 (tsig best k=32); query-conditional retrieval is a usable selector",
+  "retrieval_best_k": 8,
+  "tsig_best_k": 32,
+  "target": 5211,
+  "target_turn": 5,
+  "context_tokens": 5409,
+  "timestamp": "2026-10-09T23:15:36Z"
+}

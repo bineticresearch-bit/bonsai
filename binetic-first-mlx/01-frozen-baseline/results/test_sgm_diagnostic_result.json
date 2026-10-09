@@ -1,0 +1,160 @@
+{
+  "code_span": [
+    2713,
+    2714,
+    2715,
+    2716
+  ],
+  "code_ranks": [
+    {
+      "pos": 2713,
+      "token": "5",
+      "surprisal": 4.296,
+      "rank": 3725,
+      "of": 5409
+    },
+    {
+      "pos": 2714,
+      "token": "2",
+      "surprisal": 2.822,
+      "rank": 4939,
+      "of": 5409
+    },
+    {
+      "pos": 2715,
+      "token": "1",
+      "surprisal": 2.23,
+      "rank": 5101,
+      "of": 5409
+    },
+    {
+      "pos": 2716,
+      "token": "1",
+      "surprisal": 3.602,
+      "rank": 4430,
+      "of": 5409
+    }
+  ],
+  "code_in_top": {
+    "16": 0,
+    "64": 0,
+    "256": 0
+  },
+  "top16_surprisal": [
+    {
+      "pos": 17,
+      "token": " System",
+      "surprisal": 17.466
+    },
+    {
+      "pos": 2127,
+      "token": " maintains",
+      "surprisal": 16.789
+    },
+    {
+      "pos": 27,
+      "token": " retry",
+      "surprisal": 16.324
+    },
+    {
+      "pos": 66,
+      "token": " maintains",
+      "surprisal": 15.8
+    },
+    {
+      "pos": 275,
+      "token": " maintains",
+      "surprisal": 15.053
+    },
+    {
+      "pos": 24,
+      "token": " timeout",
+      "surprisal": 14.637
+    },
+    {
+      "pos": 26,
+      "token": " cases",
+      "surprisal": 13.971
+    },
+    {
+      "pos": 73,
+      "token": " maintains",
+      "surprisal": 13.888
+    },
+    {
+      "pos": 20,
+      "token": " including",
+      "surprisal": 13.591
+    },
+    {
+      "pos": 118,
+      "token": " maintains",
+      "surprisal": 13.31
+    },
+    {
+      "pos": 380,
+      "token": " requests",
+      "surprisal": 13.264
+    },
+    {
+      "pos": 3721,
+      "token": " maintains",
+      "surprisal": 13.187
+    },
+    {
+      "pos": 41,
+      "token": " multiple",
+      "surprisal": 13.161
+    },
+    {
+      "pos": 1916,
+      "token": " maintains",
+      "surprisal": 13.088
+    },
+    {
+      "pos": 1178,
+      "token": " maintains",
+      "surprisal": 12.993
+    },
+    {
+      "pos": 3803,
+      "token": " recovery",
+      "surprisal": 12.885
+    }
+  ],
+  "oracle_code_only": {
+    "n_selected": 4,
+    "recall_correct": false,
+    "actual": null,
+    "text": "I don't have access to previous turns or context from our conversation history. "
+  },
+  "oracle_code_window": {
+    "n_selected": 28,
+    "recall_correct": false,
+    "actual": null,
+    "text": "I don't have access to previous turns or context from our conversation history. "
+  },
+  "first_256": {
+    "n_selected": 256,
+    "recall_correct": false,
+    "actual": 8270,
+    "text": "8270\nuser\nWhat was the\n<think>\nThe user is asking \"What was the\" - this seems li"
+  },
+  "last_256": {
+    "n_selected": 256,
+    "recall_correct": false,
+    "actual": null,
+    "text": "I don't have access to previous turns or context from our conversation history. "
+  },
+  "inplace": {
+    "n_selected": 5409,
+    "recall_correct": true,
+    "actual": 5211,
+    "text": "5211\nuser\n\n\n<think>\nThe user is asking me to repeat the secret code from turn 5."
+  },
+  "verdict": "both fail \u2014 inspect code_ranks and top16_surprisal for the right mechanism",
+  "target": 5211,
+  "target_turn": 5,
+  "context_tokens": 5409,
+  "timestamp": "2026-10-09T22:15:58Z"
+}

@@ -1,0 +1,118 @@
+{
+  "code_chunk": 339,
+  "code_span": [
+    2713,
+    2714,
+    2715,
+    2716
+  ],
+  "sig_rank": 26,
+  "surp_rank": 673,
+  "n_chunks": 677,
+  "top10_signature": [
+    {
+      "chunk": 675,
+      "sig": 1567.5606,
+      "content": "\nassistant\n<think>\n\n</think>"
+    },
+    {
+      "chunk": 271,
+      "sig": 1527.5015,
+      "content": "4: The secret code is 1"
+    },
+    {
+      "chunk": 203,
+      "sig": 1525.9576,
+      "content": " 3: The secret code is "
+    },
+    {
+      "chunk": 68,
+      "sig": 1520.6098,
+      "content": " handling handling timeout process. Turn"
+    },
+    {
+      "chunk": 474,
+      "sig": 1516.3977,
+      "content": " code is 7748."
+    },
+    {
+      "chunk": 138,
+      "sig": 1510.8908,
+      "content": " log: values across logic retry maintain"
+    },
+    {
+      "chunk": 1,
+      "sig": 1510.1187,
+      "content": " secret code is 8270"
+    },
+    {
+      "chunk": 405,
+      "sig": 1481.4416,
+      "content": " recovery logic. Turn 6: The"
+    },
+    {
+      "chunk": 137,
+      "sig": 1472.3288,
+      "content": " is 7767. System"
+    },
+    {
+      "chunk": 136,
+      "sig": 1471.7232,
+      "content": ". Turn 2: The secret code"
+    }
+  ],
+  "inplace": {
+    "n": 5409,
+    "recall": true,
+    "actual": 5211,
+    "text": "5211\nuser\n\n\n<think>\nThe user is asking me to repeat the secret code from turn 5."
+  },
+  "topk8": {
+    "n": 64,
+    "recall": false,
+    "actual": null,
+    "code_in_selection": 0,
+    "text": "1\n<think>\n\n</think>\n\n1\n\n\n\n\n\n\n\n\n"
+  },
+  "topk8_win16": {
+    "n": 241,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\n\n\n\n\n\n\n\n\n"
+  },
+  "topk16": {
+    "n": 128,
+    "recall": false,
+    "actual": 8421,
+    "code_in_selection": 0,
+    "text": "8421\n\n\n\n\n\n\n\n\n"
+  },
+  "topk16_win16": {
+    "n": 353,
+    "recall": false,
+    "actual": 1207,
+    "code_in_selection": 0,
+    "text": "1207\n\n\n\n\n\n\n\n\n"
+  },
+  "topk32": {
+    "n": 256,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\n\n\n\n\n\n\n\n\n"
+  },
+  "topk32_win16": {
+    "n": 505,
+    "recall": true,
+    "actual": 5211,
+    "code_in_selection": 4,
+    "text": "5211\n\n\n\n\n\n\n\n\n"
+  },
+  "verdict": "TEMPORAL SIGNATURE WORKS \u2014 the state-delta ranks the fact higher than surprisal AND selecting by it (warm state) supports recall",
+  "target": 5211,
+  "target_turn": 5,
+  "context_tokens": 5409,
+  "chunk": 8,
+  "timestamp": "2026-10-09T22:22:23Z"
+}

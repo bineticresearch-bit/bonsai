@@ -1,0 +1,47 @@
+{
+  "test": "recurrent_state",
+  "name": "recurrent_state_memory_bet",
+  "num_turns": 10,
+  "tokens_per_turn": 1000,
+  "context_tokens": 5409,
+  "chunk_size": 2048,
+  "linear_state_mb": 156.89,
+  "variants": {
+    "inplace": {
+      "mode": "inplace",
+      "chunk_size": 2048,
+      "context_tokens": 5409,
+      "context_time_s": 31.76,
+      "recall_correct": true,
+      "recall_accuracy": 1.0,
+      "expected_value": 8270,
+      "actual_value": 8270,
+      "generated_text": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about the secret code from"
+    },
+    "carry_linear": {
+      "mode": "carry_linear",
+      "chunk_size": 2048,
+      "context_tokens": 5409,
+      "context_time_s": 34.2,
+      "recall_correct": false,
+      "recall_accuracy": 0.0,
+      "expected_value": 8270,
+      "actual_value": null,
+      "generated_text": "4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+    },
+    "reset_both": {
+      "mode": "reset_both",
+      "chunk_size": 2048,
+      "context_tokens": 5409,
+      "context_time_s": 32.94,
+      "recall_correct": false,
+      "recall_accuracy": 0.0,
+      "expected_value": 8270,
+      "actual_value": null,
+      "generated_text": "I don't have access to previous turns or context from our conversation history. Please provide the s"
+    }
+  },
+  "verdict": "linear state alone insufficient \u2014 full-attn KV required",
+  "complete": true,
+  "timestamp": "2026-10-09T17:09:20Z"
+}
