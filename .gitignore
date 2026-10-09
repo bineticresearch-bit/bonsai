@@ -22,4 +22,4 @@ __pycache__/
 venv/
 
 # --- Stakpak session data ---
-.stakpak/
+.stakpak/session*
