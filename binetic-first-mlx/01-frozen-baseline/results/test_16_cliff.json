@@ -1,0 +1,94 @@
+{
+  "test": 16,
+  "name": "aggressive_compression_cliff",
+  "num_turns": 20,
+  "tokens_per_turn": 2000,
+  "total_tokens": 21168,
+  "expected_code": 8270,
+  "keep_first": 512,
+  "results": [
+    {
+      "method": "baseline (full KV)",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 42.01,
+      "compression_ratio": 1.0
+    },
+    {
+      "method": "pure_spectral keep=0.1",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 5.88,
+      "compression_ratio": 10.0
+    },
+    {
+      "method": "pure_spectral keep=0.05",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 6.35,
+      "compression_ratio": 20.0
+    },
+    {
+      "method": "pure_spectral keep=0.02",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 4.32,
+      "compression_ratio": 50.0
+    },
+    {
+      "method": "pure_spectral keep=0.01",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 6.35,
+      "compression_ratio": 100.0
+    },
+    {
+      "method": "hybrid ref=512 keep=0.1",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 11.45,
+      "compression_ratio": 8.21
+    },
+    {
+      "method": "hybrid ref=512 keep=0.05",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 16.42,
+      "compression_ratio": 13.7
+    },
+    {
+      "method": "hybrid ref=512 keep=0.02",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 14.76,
+      "compression_ratio": 22.88
+    },
+    {
+      "method": "hybrid ref=512 keep=0.01",
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 12.7,
+      "compression_ratio": 29.46
+    }
+  ],
+  "timestamp": "2026-10-09T04:04:33Z",
+  "elapsed_seconds": 952.0
+}

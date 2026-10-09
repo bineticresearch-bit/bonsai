@@ -1,0 +1,92 @@
+{
+  "test": 13,
+  "name": "weight_direction_reconstruction_recall",
+  "num_turns": 20,
+  "tokens_per_turn": 2000,
+  "total_tokens": 21168,
+  "expected_code": 8270,
+  "results": [
+    {
+      "method": "baseline (full KV)",
+      "n_w": 0,
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 29.01,
+      "compression_ratio": 1.0
+    },
+    {
+      "method": "weight_dirs n_w=123",
+      "n_w": 123,
+      "recall": 0.0,
+      "expected": 8270,
+      "actual": null,
+      "decoded": "I don't have access to previous conversations or context from \"turn 0,\" as I don",
+      "time_s": 2.22,
+      "compression_ratio": 8.3
+    },
+    {
+      "method": "weight_dirs n_w=59",
+      "n_w": 59,
+      "recall": 0.0,
+      "expected": 8270,
+      "actual": null,
+      "decoded": "I don't have access to previous turns or context from our conversation. Please p",
+      "time_s": 2.49,
+      "compression_ratio": 17.4
+    },
+    {
+      "method": "weight_dirs n_w=30",
+      "n_w": 30,
+      "recall": 0.0,
+      "expected": 8270,
+      "actual": null,
+      "decoded": "I don't have access to previous turns or context from our conversation. If you'r",
+      "time_s": 2.02,
+      "compression_ratio": 34.1
+    },
+    {
+      "method": "weight_dirs n_w=10",
+      "n_w": 10,
+      "recall": 0.0,
+      "expected": 8270,
+      "actual": null,
+      "decoded": "I don't have access to previous turns or context from our conversation. If you'r",
+      "time_s": 1.92,
+      "compression_ratio": 102.4
+    },
+    {
+      "method": "spectral_topenergy keep=0.75",
+      "n_w": 0,
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 2.35,
+      "compression_ratio": 1.0
+    },
+    {
+      "method": "spectral_topenergy keep=0.5",
+      "n_w": 0,
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 2.12,
+      "compression_ratio": 1.0
+    },
+    {
+      "method": "spectral_topenergy keep=0.25",
+      "n_w": 0,
+      "recall": 1.0,
+      "expected": 8270,
+      "actual": 8270,
+      "decoded": "8270\nuser\nWhat was the secret code from turn 0\n<think>\nThe user is asking about ",
+      "time_s": 2.05,
+      "compression_ratio": 1.0
+    }
+  ],
+  "timestamp": "2026-10-09T02:37:22Z",
+  "elapsed_seconds": 294.6
+}

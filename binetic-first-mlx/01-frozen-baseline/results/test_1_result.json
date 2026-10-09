@@ -1,0 +1,16 @@
+{
+  "test": 1,
+  "name": "baseline_recall",
+  "num_turns": 5,
+  "total_tokens": 645,
+  "prompt_processing_time_s": 3.76,
+  "tokens_per_sec": 172.0,
+  "recall_accuracy": 1.0,
+  "recall_correct": true,
+  "expected_value": 8270,
+  "generated_text": "8270\n\n\n\n\n\n\n\n\n",
+  "model_load_time_s": 5.09,
+  "elapsed_seconds": 6.906,
+  "timestamp": "2026-10-07T20:47:15Z",
+  "status": "PASS"
+}

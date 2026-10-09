@@ -1,0 +1,191 @@
+{
+  "test": 7,
+  "name": "ga_chunking_evolution",
+  "num_turns": 10,
+  "population_size": 6,
+  "generations": 2,
+  "total_evaluations": 12,
+  "best_individual": {
+    "chunk_size": 2048,
+    "max_seq_len": 64,
+    "strategy": "first",
+    "tree_depth": 2,
+    "branching": 8
+  },
+  "best_fitness": 9.85,
+  "best_recall": 0.0,
+  "all_results": [
+    {
+      "generation": 0,
+      "individual": 0,
+      "params": {
+        "chunk_size": 2048,
+        "max_seq_len": 64,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 8
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 0,
+      "individual": 1,
+      "params": {
+        "chunk_size": 16384,
+        "max_seq_len": 64,
+        "strategy": "last",
+        "tree_depth": 2,
+        "branching": 2
+      },
+      "fitness": 5.0,
+      "injected_seq_len": 64,
+      "recall": 0.0
+    },
+    {
+      "generation": 0,
+      "individual": 2,
+      "params": {
+        "chunk_size": 16384,
+        "max_seq_len": 64,
+        "strategy": "last",
+        "tree_depth": 2,
+        "branching": 2
+      },
+      "fitness": 5.0,
+      "injected_seq_len": 64,
+      "recall": 0.0
+    },
+    {
+      "generation": 0,
+      "individual": 3,
+      "params": {
+        "chunk_size": 4096,
+        "max_seq_len": 48,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 4
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 0,
+      "individual": 4,
+      "params": {
+        "chunk_size": 8192,
+        "max_seq_len": 16,
+        "strategy": "mean",
+        "tree_depth": 1,
+        "branching": 8
+      },
+      "fitness": 8.0,
+      "injected_seq_len": 16,
+      "recall": 0.0
+    },
+    {
+      "generation": 0,
+      "individual": 5,
+      "params": {
+        "chunk_size": 16384,
+        "max_seq_len": 32,
+        "strategy": "mean",
+        "tree_depth": 2,
+        "branching": 4
+      },
+      "fitness": 6.666666666666666,
+      "injected_seq_len": 32,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 0,
+      "params": {
+        "chunk_size": 2048,
+        "max_seq_len": 64,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 8
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 1,
+      "params": {
+        "chunk_size": 4096,
+        "max_seq_len": 48,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 4
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 2,
+      "params": {
+        "chunk_size": 8192,
+        "max_seq_len": 16,
+        "strategy": "mean",
+        "tree_depth": 1,
+        "branching": 8
+      },
+      "fitness": 8.0,
+      "injected_seq_len": 16,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 3,
+      "params": {
+        "chunk_size": 2048,
+        "max_seq_len": 64,
+        "strategy": "first",
+        "tree_depth": 1,
+        "branching": 8
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 4,
+      "params": {
+        "chunk_size": 4096,
+        "max_seq_len": 48,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 4
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    },
+    {
+      "generation": 1,
+      "individual": 5,
+      "params": {
+        "chunk_size": 4096,
+        "max_seq_len": 48,
+        "strategy": "first",
+        "tree_depth": 2,
+        "branching": 4
+      },
+      "fitness": 9.846153846153847,
+      "injected_seq_len": 1,
+      "recall": 0.0
+    }
+  ],
+  "model_load_time_s": 422.94,
+  "elapsed_seconds": 426.366,
+  "timestamp": "2026-10-07T19:40:14Z",
+  "status": "PASS"
+}

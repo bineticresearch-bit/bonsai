@@ -1,0 +1,25 @@
+# --- Model weights & caches (re-downloadable from HF, do not commit) ---
+*.safetensors
+*.gguf
+*.bin
+*.pt
+.cache/
+**/.cache/
+**/huggingface/
+
+# --- The GGUF pack is its own git repo (HF clone) — don't nest it ---
+Ternary-Bonsai-2-27B-gguf/
+
+# --- macOS ---
+.DS_Store
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# --- Stakpak session data ---
+.stakpak/

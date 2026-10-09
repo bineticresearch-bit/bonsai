@@ -1,0 +1,52 @@
+{
+  "test": "13b",
+  "name": "weight_direction_retest_diagnostics",
+  "total_tokens": 21168,
+  "expected_code": 8270,
+  "k_proj_dim": 320,
+  "v_proj_dim": 320,
+  "results": [
+    {
+      "method": "baseline",
+      "n_w": 0,
+      "recall": 1.0,
+      "actual": 8270,
+      "k_energy": 1.0,
+      "v_energy": 1.0,
+      "k_rmse": 0.0,
+      "v_rmse": 0.0
+    },
+    {
+      "method": "n_w=123",
+      "n_w": 123,
+      "recall": 0.0,
+      "actual": null,
+      "k_energy": 0.28130443673580885,
+      "v_energy": 0.2702521523460746,
+      "k_rmse": 0.8463127240538597,
+      "v_rmse": 0.8495591469109058
+    },
+    {
+      "method": "n_w=200",
+      "n_w": 200,
+      "recall": 0.0,
+      "actual": null,
+      "k_energy": 0.367855753749609,
+      "v_energy": 0.366807546466589,
+      "k_rmse": 0.7931307144463062,
+      "v_rmse": 0.7911882791668177
+    },
+    {
+      "method": "n_w=320",
+      "n_w": 320,
+      "recall": 0.0,
+      "actual": null,
+      "k_energy": 0.4753614794462919,
+      "v_energy": 0.4820077233016491,
+      "k_rmse": 0.7221076004207134,
+      "v_rmse": 0.7154574450105429
+    }
+  ],
+  "timestamp": "2026-10-09T02:47:35Z",
+  "elapsed_seconds": 233.2
+}
