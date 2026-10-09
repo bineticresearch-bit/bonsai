@@ -563,6 +563,11 @@ def run_ga_chunking(model, tok, num_turns: int = 10, tokens_per_turn: int = 1000
         "best_fitness": result["best_fitness"],
         "best_recall": result["best_recall"],
         "all_results": result["all_results"],
+        # A GA that found no working config (best_recall < 0.75) is a FAIL,
+        # not a PASS — the old fallback read recall_accuracy (absent here)
+        # and defaulted to 1.0, masking zero-recall runs.
+        "status": "PASS" if result["best_recall"] >= 0.75 else "FAIL",
+        "status_note": f"GA best_recall={result['best_recall']:.2f} over {result['total_evals']} evals",
     }
 
 
