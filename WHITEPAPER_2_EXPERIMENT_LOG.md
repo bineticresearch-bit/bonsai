@@ -303,6 +303,24 @@ Training loss *did* drop (25 → 2.0), so the model learned something.
 
 ---
 
+### Bet 11 — Two-Stage Retrieval (topic + disambiguation algorithm)
+
+**Hypothesis.** The deep finding from Bets 7-10 is that no state-derived signal can disambiguate between similar facts. So build a two-stage *algorithm* (no learning): Stage 1 (topic) = cosine(query, chunk) → candidate set; Stage 2 (disambiguation) = pick the correct chunk from the candidates using position, recency, or salience.
+
+**Method** (`run_two_stage.py`). One 27B forward pass gives the chunk hidden states + the temporal signature. For each query, Stage 1 gets the top-k candidates by cosine. Stage 2 picks one chunk: (a) *position* — is the target in the top-k? (b) *recency* — the most recent fact chunk in the candidates. (c) *salience* — the most salient fact chunk (highest temporal signature). Plus a mechanism test: does the two-stage algorithm recall?
+
+**Result** (`test_two_stage_result.json`):
+
+- **k=10:** mean rank — cosine **10.1**, 2s-position **341.4** (the target is often *not* in the top-10), 2s-recency **9.1**, 2s-salience **3.3**. Target in top-10: only **5/10** (50%). Mechanism for turn 5: the target chunk (339) is *not* in the top-10 (cosine rank 18) → **fails** (actual=8651, a different fact).
+- **k=20:** all 10 targets are in the candidate set (**100%**), and the two-stage mechanism **recalls** (recall=True, actual=5211, n=160 tokens).
+- **Salience disambiguation** picks the most salient fact in the candidate set (mean rank 3.3), but that's usually a *different* fact, not the target — confirming the temporal signature is a fact-vs-padding signal, not a target-vs-other-facts signal.
+
+**Interpretation.** The two-stage algorithm does **not** beat the single-stage cosine — it *is* the single-stage cosine with a disambiguation step on top. The bottleneck is the **cosine rank** (~10-18), not the disambiguation: with k=10, half the targets are outside the candidate set; with k=20, all are, and recall works. The position is the perfect disambiguator (if you know the turn number), but it's a *lookup*, not retrieval. The recency and salience disambiguations are reasonable fallbacks when the position is unknown, but they can't fix a target that isn't in the candidate set.
+
+> **Finding 11:** The two-stage retrieval algorithm (cosine + disambiguation) **works** (k=20 → 100% of targets in the candidate set → recall), but it does not beat the single-stage cosine — the disambiguation step adds nothing the candidate set doesn't already contain. The bottleneck is the cosine rank (~10-18), which sets the minimum k. The position is the perfect disambiguator, but it's a lookup, not retrieval. This confirms the deep finding: **the disambiguation between similar facts requires the position, not any state-derived signal or algorithm.**
+
+---
+
 ## 3. The Structural Findings (what the negatives actually say)
 
 Individually these are failures. Together they form a coherent picture:
@@ -333,6 +351,7 @@ Individually these are failures. Together they form a coherent picture:
 | Temporal index (cosine × signature) | **Marginal win** (rank 10.1→9.6, same k) | Bet 8 |
 | Triangle index (distance, residual) | **Dead** (no disambiguation; residual is fact-vs-padding, inverted) | Bet 9 |
 | Temporal pinpoint (ΔS direction) | **Dead** (ΔS directions are orthogonal, not a fingerprint) | Bet 10 |
+| Two-stage retrieval (cosine + disambiguation) | **Works** (k=20 → recall) but adds nothing over cosine | Bet 11 |
 
 ---
 
@@ -387,6 +406,7 @@ The 2-timelines frame (fast = sliding-window full attention, slow = a long-term 
 | `run_temporal_index.py` | Bet 8 | done — marginal win (fact-vs-padding signal) |
 | `run_triangle_index.py` | Bet 9 | done — no disambiguation (residual is fact-vs-padding, inverted) |
 | `run_temporal_pinpoint.py` | Bet 10 | done — ΔS directions orthogonal, not a fingerprint |
+| `run_two_stage.py` | Bet 11 | done — works at k=20; bottleneck is cosine rank, not disambiguation |
 
 ### 6.2 Environment notes
 
