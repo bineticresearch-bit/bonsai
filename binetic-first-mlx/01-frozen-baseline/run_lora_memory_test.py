@@ -56,7 +56,19 @@ def make_dataset(tok, code: int, n_examples: int = 16):
     """Each example: (input_ids, loss_start) — a 2-tuple where the 2nd element is
     a SINGLE INT (loss_start). iterate_batches zips (loss_start, token_length)
     into the (batch, 2) lengths array that default_loss masks on, so loss_end is
-    implicitly the full sequence length."""
+    implicitly the full sequence length.
+
+    FIX (2026-10-09): loss_start now masks the ENTIRE assistant turn, not just
+    the last 8 tokens. The old mask (len(ids)-8) gave the model "The secret
+    code is" for free and only trained it to predict "8270" — a trivial
+    completion. At inference the model must generate the WHOLE answer from the
+    question, which was out-of-distribution -> degenerate collapse. Masking the
+    full assistant turn makes training match inference (in-distribution)."""
+    # Prompt = everything up to (and including) the assistant turn's opening
+    # marker. loss_start = len(prompt) masks the entire assistant turn.
+    prompt_ids = list(tok.apply_chat_template(
+        [{"role": "user", "content": QUESTION}], add_generation_prompt=True))
+    loss_start = len(prompt_ids)
     ds = []
     for _ in range(n_examples):
         messages = [
@@ -64,9 +76,6 @@ def make_dataset(tok, code: int, n_examples: int = 16):
             {"role": "assistant", "content": f"The secret code is {code}."},
         ]
         ids = list(tok.apply_chat_template(messages, add_generation_prompt=False))
-        # The assistant turn is "The secret code is {code}." — the code is the
-        # 2nd-to-last token, so the last 8 tokens safely cover it.
-        loss_start = max(0, len(ids) - 8)
         ds.append((ids, loss_start))
     return ds
 

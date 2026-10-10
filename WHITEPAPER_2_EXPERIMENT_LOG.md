@@ -179,9 +179,19 @@ If A recalls 8270 *and* B recalls 1234 (and base recalls neither), the weight pr
 
 Training loss *did* drop (25 → 2.0), so the model learned something.
 
-**Interpretation.** **This is a test bug, not a real negative.** The loss mask was too narrow: we masked only the last 8 tokens, so during training the model was *given* "The secret code is" and only had to predict "8270." At inference it must generate the *whole* answer from the question — out of distribution → degenerate collapse. The fix is to mask the **entire assistant turn** (loss_start = length of the prompt with `add_generation_prompt=True`).
+**Interpretation (first run).** **This was a test bug, not a real negative.** The loss mask was too narrow: we masked only the last 8 tokens, so during training the model was *given* "The secret code is" and only had to predict "8270." At inference it must generate the *whole* answer from the question — out of distribution → degenerate collapse.
 
-> **Finding 5 (provisional):** Memory-as-weights is *untested* — the first run was invalidated by a masking bug. The mechanism (gradient-written facts recalled from an empty cache) is plausible and worth a corrected re-run. This is the one bet that is *not* yet a negative.
+**Re-run with the mask fixed** (2026-10-09, `test_lora_memory_result.json`; the buggy run is preserved as `test_lora_memory_result_buggy.json`). The mask now covers the **entire assistant turn** (12 tokens: "The secret code is 8270.\n"), so training is in-distribution. But recall still fails:
+
+| Model | Output | Recalls own code? |
+|-------|--------|-------------------|
+| base | "I'm sorry, but I can't assist with that." | — |
+| A (8270) | `727222777222277722222272` | **No** |
+| B (1234) | `212..212121212...1212.2` (actual=1212) | **No** |
+
+**Interpretation (fixed).** Now a **real negative.** The model learned to emit *numbers* (the format) but not the *specific* code — A emits a 7/2 stream, B emits 1212 (close to 1234 but wrong). The fact is **not** being written into the weights in a form that is recalled from an empty cache. At 0.5B / rank-8 / 300 iters, memory-as-weights does not carry a specific fact.
+
+> **Finding 5:** Memory-as-weights (LoRA) is a **real negative** at this scale. With the mask fixed (in-distribution training), the model learns the *format* ("answer with a number") but not the *specific* fact — A and B both fail to recall their own code from an empty cache. The fact is not stored in the weights in a recallable form. (The buggy first run is preserved for the record.)
 
 ---
 
@@ -211,6 +221,88 @@ Training loss *did* drop (25 → 2.0), so the model learned something.
 
 ---
 
+### Bet 7 — Can the retrieval index be LEARNED?
+
+**Hypothesis.** Bet 6's cosine index ranks the target fact ~10th (mean 10.1, max 18). Is that index *learnable* — i.e., can a small projection trained to align query↔fact push the rank to ~1 and let us drop the window?
+
+**Method** (`run_learned_index.py`). One 27B forward pass extracts 677 chunk hidden states (the index) + 10 query hidden states (one per turn). Baseline = cosine(query, chunk). Learned = a linear projection P (hidden→128) trained with **InfoNCE** (positive = the target chunk, negatives = all other chunks). **Crucially, a train/test split:** train on 8 turns, test on 2 *held-out* turns — because (see diagnostic) the queries are nearly identical, so training and testing on the same 10 would only measure memorization.
+
+**Result** (`test_learned_index_result.json`):
+
+- **Diagnostic (the crux):** the 10 query hidden states have **mean off-diag cosine 0.9987** — they are *nearly identical*. The queries differ only in the turn number ("turn 0" vs "turn 5"), and the model's hidden state barely distinguishes them.
+- **Cosine baseline:** mean rank **10.1** (max 18).
+- **Learned index, train (8 turns):** mean rank **4.5** — it *memorizes* the training pairs.
+- **Learned index, held-out test (2 turns):** mean rank **9.5** — barely better than cosine's 10.1.
+
+**Interpretation.** The learned index **does not generalize.** It memorizes the training queries (rank 4.5) but cannot disambiguate the held-out ones (rank 9.5 ≈ cosine). The reason is the diagnostic: the query hidden states carry almost no signal that distinguishes *which* fact is being asked for, so a linear projection has nothing to learn from. **The cosine index is already near-optimal for this setup** — learning it doesn't help, because the bottleneck is not the index but the *query representation*.
+
+> **Finding 7:** The retrieval index is **not learnable** at this scale — a linear projection trained with InfoNCE memorizes the training queries (rank 4.5) but does not generalize to held-out queries (rank 9.5 ≈ cosine 10.1). The root cause: the query hidden states are nearly identical (off-diag cos 0.9987), so they carry no disambiguation signal. The cosine index is already near-optimal; the bottleneck is the *query representation*, not the index.
+
+---
+
+### Bet 8 — Temporal Index (fuse query-conditional cosine with the temporal signature)
+
+**Hypothesis.** Bet 7 (learned index) failed because it had no per-*chunk* signal to learn from — the chunk hidden states are all similar ("the secret code is N"). The **temporal signature** is exactly that per-chunk signal: intrinsic (write-time), in the model's own state space, and *different for each chunk* (target fact = high state-delta, padding = low). So fuse the query-conditional cosine (read-time, "relevant to this query?") with the temporal signature (write-time, "distinctive?"). The target fact is the only chunk that is *both* relevant *and* distinctive.
+
+**Method** (`run_temporal_index.py`). One 27B forward pass gives the chunk hidden states (the cosine index) + the temporal signature. For each of the 10 queries, rank the target chunk under: cosine alone, signature alone, and three fusions (RRF, multiplicative, additive). Then a mechanism test: does the best fusion recall at a smaller k than cosine?
+
+**Result** (`test_temporal_index_result.json`):
+
+- **Mean rank (lower = better):** cosine **10.1**, signature 14.3, RRF 10.9, **multiplicative 9.6**, additive 9.6.
+- The fusion (cos × sig) improves the mean rank from 10.1 → 9.6 — a ~5% gain. Mixed per-turn: better on 5 turns, worse on 4, same on 1.
+- **Mechanism:** the temporal index recalls at the **same k** as cosine (k=8 with window, k=16, k=32) — it does *not* reduce the k needed.
+
+**Interpretation.** The temporal index is a **marginal win, not a breakthrough.** The reason: the temporal signature is a **fact-vs-padding** signal, not a **target-vs-other-facts** signal. In this test, all 10 "secret code is N" chunks are *distinctive* (high signature), and the padding is not. So the signature boosts *all* fact chunks above padding — but it can't rank the *target* fact above the *other 9* facts. That disambiguation is what the query-conditional cosine does. So the signature's role is a **useful but weak secondary signal** (boosts facts above padding); the query-conditional cosine is the **primary disambiguator**.
+
+> **Finding 8:** The temporal index (cosine × temporal signature) is a **marginal win** — it improves the mean rank from 10.1 to 9.6 but does not reduce the k needed for recall. The temporal signature is a *fact-vs-padding* signal, not a *target-vs-other-facts* signal: it boosts all fact chunks above padding but cannot disambiguate between the facts. The query-conditional cosine remains the primary disambiguator; the temporal signature is a useful but weak secondary signal.
+
+---
+
+### Bet 9 — Triangle Index (the difference vector Q−C and its residual)
+
+**Hypothesis.** Cosine only uses the *angle* between the query and a chunk. The **difference vector** `D = Q − C` (the side that "completes the triangle" O–Q–C) uses the *full* triangle (angle + both magnitudes). Decompose the chunk into the part the query *explains* and the part it *doesn't*: `C = proj_Q(C) + R`, where `R` (the residual) is the "specific content" cosine throws away. If the target fact's residual is *different* from the other facts' residuals, the triangle geometry provides a disambiguation signal.
+
+**Method** (`run_triangle_index.py`). One 27B forward pass gives the chunk hidden states. For each query, rank the target chunk under: cosine (baseline), distance |Q−C|, residual magnitude |R|, cosine(Q, R), and residual×position (structured case). Plus a diagnostic: are the residuals actually different per chunk?
+
+**Result** (`test_triangle_index_result.json`):
+
+- **Mean rank (lower = better):** cosine **10.1**, distance **10.1** (identical to cosine), residual **667.9** (terrible), q.resid **427.3** (terrible), resid+pos **1.0** (tautology — used the known position).
+- **Diagnostic (the key finding):**
+  - `cos(resid_target, resid_other_fact)` = **0.58–0.92** (HIGH — facts are similar to each other)
+  - `cos(resid_target, resid_padding)` = **0.11** (LOW — facts are different from padding)
+  - Residual magnitude: target=0.628, other_facts=0.603, **padding=0.745** (padding is *higher*)
+
+**Interpretation.** The triangle geometry does **not** provide a disambiguation signal beyond cosine:
+
+1. **Distance = cosine.** The full triangle (Q−C) is angle-dominated — it adds nothing over cosine (mean rank 10.1, identical).
+2. **Residual = fact-vs-padding, not target-vs-other-facts.** The target fact's residual is *similar* to the other facts' residuals (cos 0.58–0.92) and *different* from padding (cos 0.11). But the residual *magnitude* is actually *higher* for padding (0.745) than for facts (0.603) — so ranking by magnitude puts the target near the **bottom** (rank 667.9). The residual is a *worse* fact-vs-padding signal than the temporal signature.
+3. **The "resid+pos = 1.0" is a tautology.** I used the *known* target position, so of course it ranks the target #1 — that's a lookup, not retrieval.
+
+> **Finding 9:** The triangle geometry (distance, residual) does **not** provide a disambiguation signal beyond cosine. The distance is identical to cosine (angle-dominated). The residual is a *fact-vs-padding* signal (like the temporal signature), not a *target-vs-other-facts* signal — and it's actually *inverted* (padding has higher residual magnitude than facts). The "specific content" (the code value) is *not* isolated in the residual in a matchable way, because the query (a question) doesn't contain the answer to match against. **The disambiguation signal is POSITION, not the triangle geometry.**
+
+---
+
+### Bet 10 — Temporal Pinpoint (the state-delta VECTOR: direction + magnitude)
+
+**Hypothesis.** The temporal signature (Bet 4) only uses the *magnitude* of the state-delta (||ΔS||) — "how much changed." The temporal **pinpoint** uses the full ΔS *vector*: the *direction* ΔS/||ΔS|| is a **fingerprint of the event**, not just its salience. Two different facts produce *different* state-delta *directions* (different "kinks" in the state trajectory), even if their magnitudes are similar. So the direction is a richer, per-event signal.
+
+**Method** (`run_temporal_pinpoint.py`). One 27B forward pass gives the chunk hidden states + the ΔS *vector* per chunk (projected to 2048 dims to avoid OOM on the 75M-dim recurrent state). For each query, rank the target chunk under: cosine (baseline), ΔS magnitude, ΔS direction (distinctiveness = 1 − cos(ΔS_chunk, mean_ΔS)), and the fusions cos×mag and cos×dir. Plus a diagnostic: are the ΔS directions actually different per fact?
+
+**Result** (`test_temporal_pinpoint_result.json`):
+
+- **Mean rank (lower = better):** cosine **10.1**, ΔS magnitude 15.3, ΔS direction **358.0** (terrible), cos×mag 10.9, cos×dir 14.5.
+- **Diagnostic (the key finding):**
+  - `cos(ΔS_target, ΔS_other_fact)` = **−0.25 to 0.76** (mostly ORTHOGONAL — random)
+  - `cos(ΔS_target, ΔS_padding)` = **−0.03** (orthogonal)
+  - ΔS magnitude: target=1380.9, other_facts=1458.5, padding=1293.4 (target is *between*)
+  - Distinctiveness: target=0.779, other_facts=0.995, padding=0.960 (target is *less* distinctive)
+
+**Interpretation.** The temporal pinpoint does **not** provide a disambiguation signal. The ΔS directions are **orthogonal to each other** (cos ≈ 0) — they're not "fact-like" in a shared direction; they're random. The target's ΔS is actually *less* distinctive than both the other facts and the padding. The ΔS magnitude is a weak fact-vs-padding signal (worse than the temporal signature).
+
+> **Finding 10:** The temporal pinpoint (ΔS direction) is **not** a per-event fingerprint — the ΔS directions are orthogonal to each other (cos ≈ 0), so they carry no shared "fact-like" structure. The target's ΔS is *less* distinctive than the other facts and the padding. This confirms the deep finding from yet another angle: **no signal derived from the model's internal state** (surprisal, temporal signature, temporal pinpoint, triangle geometry) **can disambiguate between similar facts.** The disambiguation requires either (a) the query to carry the specific signal (it doesn't — Bet 7) or (b) the position (which you know in a structured conversation).
+
+---
+
 ## 3. The Structural Findings (what the negatives actually say)
 
 Individually these are failures. Together they form a coherent picture:
@@ -235,8 +327,12 @@ Individually these are failures. Together they form a coherent picture:
 | Temporal signature selection | **Works** at k=32 (intrinsic, needs large k) | Bet 4 |
 | Cold-cache selective KV injection | **Dead** (wrong mechanism) | Bet 3 |
 | Warm-cache selective KV injection | **Proven** (warm linear state + selective KV) | Bet 4 (topk32) |
-| Memory-as-weights (LoRA) | **Unproven** (test bug) | Bet 5 |
+| Memory-as-weights (LoRA) | **Dead** (real negative, mask fixed) | Bet 5 |
 | **Query-conditional retrieval** | **Works** (beats intrinsic on rank + token efficiency) | Bet 6 |
+| Learned retrieval index (InfoNCE) | **Does not generalize** (queries too similar) | Bet 7 |
+| Temporal index (cosine × signature) | **Marginal win** (rank 10.1→9.6, same k) | Bet 8 |
+| Triangle index (distance, residual) | **Dead** (no disambiguation; residual is fact-vs-padding, inverted) | Bet 9 |
+| Temporal pinpoint (ΔS direction) | **Dead** (ΔS directions are orthogonal, not a fingerprint) | Bet 10 |
 
 ---
 
@@ -284,9 +380,13 @@ The 2-timelines frame (fast = sliding-window full attention, slow = a long-term 
 | `run_sgm_test.py` | Bet 2 | done — confounded |
 | `run_sgm_diagnostic.py` | Bet 3 | done — surprisal dead, cold-cache dead |
 | `run_temporal_signature.py` | Bet 4 | done — better but intrinsic |
-| `run_lora_memory_test.py` | Bet 5 | **needs mask fix** |
+| `run_lora_memory_test.py` | Bet 5 | done (mask fixed) — real negative |
 | `run_sgm_warm.py` | (warm-cache mechanism) | **not on disk** — the warm-cache logic lives in `run_temporal_signature.py::build_warm_cache` |
 | `run_retrieval_test.py` | Bet 6 | done — query-conditional retrieval works (k=8 vs tsig k=32) |
+| `run_learned_index.py` | Bet 7 | done — index not learnable (queries too similar) |
+| `run_temporal_index.py` | Bet 8 | done — marginal win (fact-vs-padding signal) |
+| `run_triangle_index.py` | Bet 9 | done — no disambiguation (residual is fact-vs-padding, inverted) |
+| `run_temporal_pinpoint.py` | Bet 10 | done — ΔS directions orthogonal, not a fingerprint |
 
 ### 6.2 Environment notes
 
@@ -297,12 +397,12 @@ The 2-timelines frame (fast = sliding-window full attention, slow = a long-term 
 
 ### 6.3 Known test bugs (open)
 
-- **LoRA mask** (Bet 5): mask the *entire* assistant turn, not just the last 8 tokens.
+- **LoRA mask** (Bet 5): **fixed** — now masks the entire assistant turn. The re-run is a real negative (see Bet 5).
 - **`run_sgm_warm.py`** is listed above as "written" but does **not exist on disk** — the warm-cache mechanism it was meant to isolate is actually implemented in `run_temporal_signature.py::build_warm_cache` (and proven by the Bet 4 topk32 result).
 
 ### 6.4 The one-sentence summary
 
-> We proved that exact long-range recall lives in the full-attention KV (not the linear state), that no *intrinsic* write-time signal can find a fact (surprisal and temporal signature both fail because salience is query-conditional), and that **query-conditional retrieval over a bank of the model's own KV, injected into a warm cache, works** — beating the best intrinsic selector on both rank and token efficiency. The "two timelines" are now concrete and the next step is a *learned* retrieval index.
+> We proved that exact long-range recall lives in the full-attention KV (not the linear state), that no *intrinsic* write-time signal can find a fact (surprisal, temporal signature, temporal pinpoint, and triangle geometry all fail because salience is query-conditional), and that **query-conditional retrieval over a bank of the model's own KV, injected into a warm cache, works** — beating the best intrinsic selector on both rank and token efficiency. We also proved the index is *not* learnable (the query hidden states are too similar) and that the disambiguation between similar facts requires the *position* (known in a structured conversation), not any signal derived from the model's internal state. The "two timelines" are now concrete.
 
 ---
 

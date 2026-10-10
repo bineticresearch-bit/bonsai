@@ -1,0 +1,162 @@
+{
+  "test": "temporal_index",
+  "name": "temporal_index_fusion",
+  "num_turns": 10,
+  "context_tokens": 5409,
+  "n_chunks": 677,
+  "targets": [
+    1,
+    69,
+    137,
+    204,
+    271,
+    339,
+    406,
+    474,
+    542,
+    609
+  ],
+  "cos_ranks": [
+    7,
+    3,
+    14,
+    13,
+    3,
+    18,
+    16,
+    6,
+    10,
+    11
+  ],
+  "sig_ranks": [
+    7,
+    11,
+    9,
+    27,
+    2,
+    26,
+    18,
+    5,
+    13,
+    25
+  ],
+  "rrf_ranks": [
+    5,
+    4,
+    9,
+    21,
+    1,
+    22,
+    17,
+    2,
+    10,
+    18
+  ],
+  "mult_ranks": [
+    5,
+    4,
+    10,
+    16,
+    1,
+    18,
+    14,
+    2,
+    11,
+    15
+  ],
+  "add_ranks": [
+    5,
+    4,
+    10,
+    16,
+    1,
+    18,
+    14,
+    2,
+    11,
+    15
+  ],
+  "cos_mean": 10.1,
+  "sig_mean": 14.3,
+  "rrf_mean": 10.9,
+  "mult_mean": 9.6,
+  "add_mean": 9.6,
+  "best_method": "mult",
+  "inplace": {
+    "recall": true,
+    "actual": 5211
+  },
+  "cosine_k8": {
+    "n": 64,
+    "recall": false,
+    "actual": 8270,
+    "target_in_topk": 0
+  },
+  "cosine_k8_win16": {
+    "n": 220,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 0
+  },
+  "mult_k8": {
+    "n": 64,
+    "recall": false,
+    "actual": null,
+    "target_in_topk": 0
+  },
+  "mult_k8_win16": {
+    "n": 252,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 0
+  },
+  "cosine_k16": {
+    "n": 128,
+    "recall": false,
+    "actual": 1541,
+    "target_in_topk": 0
+  },
+  "cosine_k16_win16": {
+    "n": 356,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 0
+  },
+  "mult_k16": {
+    "n": 128,
+    "recall": false,
+    "actual": 1541,
+    "target_in_topk": 0
+  },
+  "mult_k16_win16": {
+    "n": 377,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 0
+  },
+  "cosine_k32": {
+    "n": 256,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 1
+  },
+  "cosine_k32_win16": {
+    "n": 497,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 1
+  },
+  "mult_k32": {
+    "n": 256,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 1
+  },
+  "mult_k32_win16": {
+    "n": 505,
+    "recall": true,
+    "actual": 5211,
+    "target_in_topk": 1
+  },
+  "timestamp": "2026-10-10T00:16:38Z"
+}

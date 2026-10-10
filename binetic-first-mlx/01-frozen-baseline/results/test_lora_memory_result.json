@@ -5,7 +5,7 @@
   "question": "What is the secret code?",
   "code_A": 8270,
   "code_B": 1234,
-  "iters": 200,
+  "iters": 300,
   "lr": 0.001,
   "results": {
     "base": {
@@ -16,19 +16,19 @@
     },
     "adapter_A": {
       "trained_code": 8270,
-      "text": "!!!!!!!!!!!!!!!!!!!!!!!!",
+      "text": "727222777222277722222272",
       "actual": null,
       "recalls_own_code": false,
       "recalls_other_code": false
     },
     "adapter_B": {
       "trained_code": 1234,
-      "text": ".2!.......!!......2.....",
-      "actual": null,
+      "text": "212..212121212...1212.2",
+      "actual": 1212,
       "recalls_own_code": false,
       "recalls_other_code": false
     }
   },
   "verdict": "memory-as-weights insufficient at this scale/iters \u2014 the weight did not carry the specific fact (or the query didn't trigger it)",
-  "timestamp": "2026-10-09T22:39:24Z"
+  "timestamp": "2026-10-09T23:58:58Z"
 }

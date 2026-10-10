@@ -1,0 +1,71 @@
+{
+  "test": "learned_index",
+  "name": "learned_retrieval_index",
+  "num_turns": 10,
+  "context_tokens": 5409,
+  "n_chunks": 677,
+  "dim": 128,
+  "steps": 400,
+  "lr": 0.001,
+  "tau": 0.1,
+  "query_offdiag_cosine": 0.9987,
+  "targets": [
+    1,
+    69,
+    137,
+    204,
+    271,
+    339,
+    406,
+    474,
+    542,
+    609
+  ],
+  "train_turns": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "test_turns": [
+    8,
+    9
+  ],
+  "cos_ranks": [
+    7,
+    3,
+    14,
+    13,
+    3,
+    18,
+    16,
+    6,
+    10,
+    11
+  ],
+  "train_learn_ranks": [
+    1,
+    2,
+    3,
+    7,
+    6,
+    8,
+    4,
+    5
+  ],
+  "test_learn_ranks": [
+    9,
+    10
+  ],
+  "cos_mean_rank": 10.1,
+  "train_mean_rank": 4.5,
+  "test_mean_rank": 9.5,
+  "loss_start": 3.5169,
+  "loss_end": 2.7551,
+  "verdict": "LEARNED INDEX HELPS ON HELD-OUT \u2014 mean rank 9.5 vs cosine 10.1; partial generalization, needs more data or a deeper index",
+  "timestamp": "2026-10-09T23:58:58Z"
+}
